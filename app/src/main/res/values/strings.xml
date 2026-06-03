@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">BatTu</string>
+
+    <!-- Common -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="back">Back</string>
+
+    <!-- Home -->
+    <string name="home_open_chart">Create Bazi Chart</string>
+    <string name="home_open_language">Language</string>
+    <string name="home_title">BatTu — Bazi</string>
+
+    <!-- Chart form -->
+    <string name="chart_title">Bazi Chart</string>
+    <string name="chart_create">Create chart</string>
+    <string name="chart_birth_date">Birth date</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+
+    <!-- Chart result -->
+    <string name="chart_header_title">Bazi Chart</string>
+    <string name="section_pillars">Four Pillars</string>
+    <string name="section_xingchong">Clash · Combination · Punishment · Harm</string>
+    <string name="pillar_sub_year">Ancestry</string>
+    <string name="pillar_sub_month">Parents</string>
+    <string name="pillar_sub_day">Self</string>
+    <string name="pillar_sub_hour">Children</string>
+    <string name="section_day_master">Day Master</string>
+    <string name="section_wuxing">Five Elements</string>
+    <string name="section_geju">Structure</string>
+    <string name="section_dayun">Major Luck Cycles</string>
+    <string name="section_shensha">Symbolic Stars</string>
+    <string name="pillar_year">Year</string>
+    <string name="pillar_month">Month</string>
+    <string name="pillar_day">Day</string>
+    <string name="pillar_hour">Hour</string>
+    <string name="palace_ming">Life Palace</string>
+    <string name="palace_taiyuan">Conception Palace</string>
+    <string name="palace_taixi">Fetal Breath</string>
+    <string name="palace_shen">Body Palace</string>
+    <string name="xunkong">Void Branches</string>
+    <string name="wuxing_strong">Strong</string>
+    <string name="wuxing_weak">Weak</string>
+    <string name="geju_name">Name</string>
+    <string name="geju_type">Type</string>
+    <string name="geju_strength">Day Master strength</string>
+    <string name="dayun_age">Age %1$d</string>
+</resources>

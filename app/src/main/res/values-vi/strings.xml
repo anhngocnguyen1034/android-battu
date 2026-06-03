@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Bát Tự</string>
+
+    <!-- Common -->
+    <string name="ok">OK</string>
+    <string name="cancel">Hủy</string>
+    <string name="back">Quay lại</string>
+
+    <!-- Home -->
+    <string name="home_open_chart">Lập lá số Bát Tự</string>
+    <string name="home_open_language">Ngôn ngữ</string>
+    <string name="home_title">Bát Tự</string>
+
+    <!-- Chart form -->
+    <string name="chart_title">Lá số Bát Tự</string>
+    <string name="chart_create">Lập lá số</string>
+    <string name="chart_birth_date">Ngày sinh</string>
+    <string name="gender_male">Nam</string>
+    <string name="gender_female">Nữ</string>
+
+    <!-- Chart result -->
+    <string name="chart_header_title">Lá số Bát Tự</string>
+    <string name="section_pillars">Tứ trụ</string>
+    <string name="section_xingchong">Hình · Xung · Hợp · Hại</string>
+    <string name="pillar_sub_year">Tổ nghiệp</string>
+    <string name="pillar_sub_month">Cha mẹ</string>
+    <string name="pillar_sub_day">Bản thân</string>
+    <string name="pillar_sub_hour">Con cái</string>
+    <string name="section_day_master">Nhật chủ</string>
+    <string name="section_wuxing">Ngũ hành</string>
+    <string name="section_geju">Cách cục</string>
+    <string name="section_dayun">Đại vận</string>
+    <string name="section_shensha">Thần sát</string>
+    <string name="pillar_year">Năm</string>
+    <string name="pillar_month">Tháng</string>
+    <string name="pillar_day">Ngày</string>
+    <string name="pillar_hour">Giờ</string>
+    <string name="palace_ming">Mệnh cung</string>
+    <string name="palace_taiyuan">Thai nguyên</string>
+    <string name="palace_taixi">Thai tức</string>
+    <string name="palace_shen">Thân cung</string>
+    <string name="xunkong">Tuần không</string>
+    <string name="wuxing_strong">Vượng</string>
+    <string name="wuxing_weak">Nhược</string>
+    <string name="geju_name">Tên cách cục</string>
+    <string name="geju_type">Loại</string>
+    <string name="geju_strength">Nhật chủ cường nhược</string>
+    <string name="dayun_age">%1$d tuổi</string>
+</resources>
