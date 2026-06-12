@@ -9,7 +9,40 @@
     <!-- Home -->
     <string name="home_open_chart">Lập lá số Bát Tự</string>
     <string name="home_open_language">Ngôn ngữ</string>
+    <string name="home_open_settings">Cài đặt</string>
     <string name="home_title">Bát Tự</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Cài đặt</string>
+    <string name="settings_theme">Chế độ tối</string>
+    <string name="settings_theme_section">Giao diện</string>
+    <string name="settings_theme_dark">Tối</string>
+    <string name="settings_theme_light">Sáng</string>
+    <string name="settings_dark_mode_desc">Giao diện tối</string>
+    <string name="settings_light_mode_desc">Giao diện sáng</string>
+    <string name="settings_language">Ngôn ngữ</string>
+    <string name="settings_language_desc">Chọn ngôn ngữ hiển thị</string>
+    <string name="settings_data_section">Dữ liệu</string>
+    <string name="settings_saved_title">Lá số đã lưu</string>
+    <string name="settings_saved_desc">Xem và quản lý các lá số đã lưu</string>
+    <string name="settings_about_section">Về ứng dụng</string>
+    <string name="settings_privacy_title">Chính sách quyền riêng tư</string>
+    <string name="settings_privacy_desc">Cách chúng tôi xử lý dữ liệu của bạn</string>
+    <string name="settings_feedback">Góp ý &amp; Phản hồi</string>
+    <string name="settings_feedback_desc">Gửi ý kiến để chúng tôi cải thiện</string>
+    <string name="settings_rate">Đánh giá ứng dụng</string>
+    <string name="settings_rate_desc">Ủng hộ chúng tôi trên Play Store</string>
+    <string name="feedback_subject">Góp ý cho Bát Tự</string>
+    <string name="feedback_dialog_title">Gửi góp ý</string>
+    <string name="feedback_dialog_hint">Hãy cho chúng tôi biết ý kiến của bạn…</string>
+    <string name="feedback_dialog_send">Gửi</string>
+    <string name="feedback_dialog_error">Không gửi được. Kiểm tra kết nối mạng và thử lại.</string>
+    <string name="feedback_dialog_email_fallback">Gửi qua email</string>
+    <string name="feedback_dialog_star">%1$d sao</string>
+    <string name="rate_dialog_title">Bạn thấy Bát Tự hữu ích?</string>
+    <string name="rate_dialog_message">Hãy dành chút thời gian đánh giá ứng dụng trên Play Store nhé.</string>
+    <string name="rate_dialog_confirm">Đánh giá ngay</string>
+    <string name="rate_dialog_dismiss">Để sau</string>
 
     <!-- Chart form -->
     <string name="chart_title">Lá số Bát Tự</string>
@@ -17,6 +50,15 @@
     <string name="chart_birth_date">Ngày sinh</string>
     <string name="gender_male">Nam</string>
     <string name="gender_female">Nữ</string>
+
+    <!-- Saved charts -->
+    <string name="chart_save">Lưu lá số</string>
+    <string name="chart_saved">Đã lưu</string>
+    <string name="saved_charts_title">Lá số đã lưu</string>
+    <string name="saved_charts_empty">Chưa có lá số nào được lưu.\nHãy lập lá số và bấm “Lưu lá số” để giữ lại tại đây.</string>
+    <string name="saved_charts_delete_title">Xóa lá số?</string>
+    <string name="saved_charts_delete_message">Lá số này sẽ bị xóa khỏi thiết bị của bạn.</string>
+    <string name="saved_charts_delete_confirm">Xóa</string>
 
     <!-- Chart result -->
     <string name="chart_header_title">Lá số Bát Tự</string>

@@ -26,7 +26,7 @@ import com.anhnn.battu.presentation.viewmodels.HomeViewModel
 @Composable
 fun HomeScreen(
     onOpenChart: () -> Unit,
-    onOpenLanguage: () -> Unit,
+    onOpenSettings: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -34,7 +34,7 @@ fun HomeScreen(
     HomeContent(
         uiState = uiState,
         onOpenChart = onOpenChart,
-        onOpenLanguage = onOpenLanguage
+        onOpenSettings = onOpenSettings
     )
 }
 
@@ -42,7 +42,7 @@ fun HomeScreen(
 private fun HomeContent(
     uiState: HomeUiState,
     onOpenChart: () -> Unit,
-    onOpenLanguage: () -> Unit,
+    onOpenSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
@@ -60,8 +60,8 @@ private fun HomeContent(
             Button(onClick = onOpenChart) {
                 Text(text = stringResource(R.string.home_open_chart))
             }
-            OutlinedButton(onClick = onOpenLanguage) {
-                Text(text = stringResource(R.string.home_open_language))
+            OutlinedButton(onClick = onOpenSettings) {
+                Text(text = stringResource(R.string.home_open_settings))
             }
         }
     }
@@ -71,7 +71,7 @@ private fun HomeContent(
 @Composable
 private fun HomeContentLightPreview() {
     AnhnnTheme(darkTheme = false) {
-        HomeContent(uiState = HomeUiState(), onOpenChart = {}, onOpenLanguage = {})
+        HomeContent(uiState = HomeUiState(), onOpenChart = {}, onOpenSettings = {})
     }
 }
 
@@ -79,6 +79,6 @@ private fun HomeContentLightPreview() {
 @Composable
 private fun HomeContentDarkPreview() {
     AnhnnTheme(darkTheme = true) {
-        HomeContent(uiState = HomeUiState(), onOpenChart = {}, onOpenLanguage = {})
+        HomeContent(uiState = HomeUiState(), onOpenChart = {}, onOpenSettings = {})
     }
 }

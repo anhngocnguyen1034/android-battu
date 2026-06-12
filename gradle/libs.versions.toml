@@ -15,6 +15,8 @@ navigationCompose = "2.8.9"
 kotlinxSerializationJson = "1.7.3"
 coroutinesTest = "1.9.0"
 anhnnLanguage = "1.0.0"
+anhnnComponents = "1.1.0"
+datastore = "1.1.1"
 retrofit = "2.11.0"
 okhttp = "4.12.0"
 
@@ -43,6 +45,8 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", v
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
 anhnn-language = { group = "com.github.anhngocnguyen1034", name = "anhnn-language", version.ref = "anhnnLanguage" }
+anhnn-rate = { group = "com.github.anhngocnguyen1034.anhnn-components", name = "anhnn-components-rate", version.ref = "anhnnComponents" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }

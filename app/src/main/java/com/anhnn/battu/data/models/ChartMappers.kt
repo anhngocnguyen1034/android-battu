@@ -7,11 +7,13 @@ import com.anhnn.battu.domain.models.Geju
 import com.anhnn.battu.domain.models.WuxingPower
 import com.anhnn.battu.domain.models.XingChong
 
-fun ChartResponseDto.toDomain(rawChartJson: String): ChartResult = ChartResult(
-    chart = chart.toDomain(rawChartJson),
-    wuxingPower = wuxingPower?.toDomain(),
-    geju = geju?.toDomain()
-)
+fun ChartResponseDto.toDomain(rawChartJson: String, rawResponseJson: String): ChartResult =
+    ChartResult(
+        chart = chart.toDomain(rawChartJson),
+        wuxingPower = wuxingPower?.toDomain(),
+        geju = geju?.toDomain(),
+        rawResponseJson = rawResponseJson
+    )
 
 fun BaziChartDto.toDomain(rawChartJson: String): BaziChart = BaziChart(
     gender = gender,

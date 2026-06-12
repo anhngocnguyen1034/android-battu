@@ -72,6 +72,10 @@ dependencies {
 
     // Anhnn Ecosystem
     implementation libs.anhnn.language
+    implementation libs.anhnn.rate
+
+    // Settings persistence (theme mode)
+    implementation libs.androidx.datastore.preferences
 
     testImplementation libs.junit
     testImplementation libs.kotlinx.coroutines.test
