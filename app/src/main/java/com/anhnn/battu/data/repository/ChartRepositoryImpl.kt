@@ -32,7 +32,7 @@ class ChartRepositoryImpl @Inject constructor(
             val dto = json.decodeFromJsonElement<ChartResponseDto>(response)
             // Keep the raw `chart` block verbatim for the future AI chat feature
             val rawChartJson = response["chart"]?.toString().orEmpty()
-            Result.success(dto.toDomain(rawChartJson))
+            Result.success(dto.toDomain(rawChartJson, response.toString()))
         } catch (e: CancellationException) {
             throw e
         } catch (e: HttpException) {

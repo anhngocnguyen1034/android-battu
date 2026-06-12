@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -25,6 +27,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -46,11 +49,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anhnn.battu.R
@@ -62,6 +65,7 @@ import com.anhnn.battu.presentation.util.BaziVi
 import com.anhnn.battu.presentation.viewmodels.ChartState
 import com.anhnn.battu.presentation.viewmodels.ChartUiState
 import com.anhnn.battu.presentation.viewmodels.ChartViewModel
+import com.anhnn.battu.presentation.viewmodels.SaveState
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -80,7 +84,8 @@ fun ChartScreen(
         onDateSelected = viewModel::onDateSelected,
         onTimeSelected = viewModel::onTimeSelected,
         onGenderSelected = viewModel::onGenderSelected,
-        onCreateChart = viewModel::onCreateChart
+        onCreateChart = viewModel::onCreateChart,
+        onSaveChart = viewModel::onSaveChart
     )
 }
 
@@ -93,6 +98,7 @@ private fun ChartContent(
     onTimeSelected: (Int, Int) -> Unit,
     onGenderSelected: (Gender) -> Unit,
     onCreateChart: () -> Unit,
+    onSaveChart: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
@@ -144,7 +150,15 @@ private fun ChartContent(
                     )
                 }
 
-                is ChartState.Success -> chartResultItems(chartState.result)
+                is ChartState.Success -> {
+                    item(key = "save") {
+                        SaveChartButton(
+                            saveState = uiState.saveState,
+                            onSaveChart = onSaveChart
+                        )
+                    }
+                    chartResultItems(chartState.result)
+                }
             }
         }
     }
@@ -245,9 +259,37 @@ private fun ChartForm(
     }
 }
 
+@Composable
+private fun SaveChartButton(
+    saveState: SaveState,
+    onSaveChart: () -> Unit
+) {
+    OutlinedButton(
+        onClick = onSaveChart,
+        enabled = saveState == SaveState.NotSaved,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Icon(
+            painter = painterResource(
+                if (saveState == SaveState.Saved) R.drawable.ic_saved else R.drawable.ic_save
+            ),
+            contentDescription = null,
+            modifier = Modifier.size(18.dp)
+        )
+        Spacer(Modifier.width(8.dp))
+        Text(
+            stringResource(
+                if (saveState == SaveState.Saved) R.string.chart_saved
+                else R.string.chart_save
+            )
+        )
+    }
+}
+
 // ── Result sections ───────────────────────────────────────────────
 
-private fun LazyListScope.chartResultItems(result: ChartResult) {
+// Internal: also reused by SavedChartDetailScreen to render a saved chart
+internal fun LazyListScope.chartResultItems(result: ChartResult) {
     val chart = result.chart
 
     item(key = "header") { DayMasterHeader(chart) }
@@ -288,15 +330,10 @@ private fun DayMasterHeader(chart: BaziChart) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
-                text = chart.dayMaster,
+                text = "${BaziVi.char(dm)} · ${BaziVi.stemElement(dm)}",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = dm?.let { WuxingColors.charColor(it, fallback) } ?: fallback
-            )
-            Text(
-                text = " ${BaziVi.char(dm)} · ${BaziVi.stemElement(dm)}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = "   " + BaziVi.gender(chart.gender),
@@ -392,25 +429,27 @@ private fun PillarCard(
             )
 
             // 2 · Ten God of the Stem — Day Pillar is forced to "Nhật Chủ" (bold).
+            // Colored like the stem below it so the element reads at a glance.
             Text(
                 text = if (isDayMasterPillar) stringResource(R.string.section_day_master)
                 else BaziVi.term(tenGodGan).ifBlank { " " },
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = if (isDayMasterPillar) FontWeight.Bold else FontWeight.Normal,
-                color = WuxingColors.Gold,
+                color = stem?.let { WuxingColors.charColor(it, WuxingColors.Gold) }
+                    ?: WuxingColors.Gold,
                 textAlign = TextAlign.Center
             )
 
-            // 3 · Heavenly Stem (Thiên Can) glyph + Hán-Việt
-            GlyphWithVi(stem, fallback)
+            // 3 · Heavenly Stem (Thiên Can), Hán-Việt reading
+            GlyphVi(stem, fallback)
 
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 2.dp),
                 color = MaterialTheme.colorScheme.outlineVariant
             )
 
-            // 4 · Earthly Branch (Địa Chi) glyph + Hán-Việt
-            GlyphWithVi(branch, fallback)
+            // 4 · Earthly Branch (Địa Chi), Hán-Việt reading
+            GlyphVi(branch, fallback)
 
             // 5 · Hidden Stems' Ten Gods (Tàng Can) — rendered BELOW the branch.
             Text(
@@ -421,11 +460,12 @@ private fun PillarCard(
             )
 
             // 6 · Nayin (Nạp âm) & Dishi (Địa thế)
+            // Nayin's last char is its element (路旁土 → 土) — color accordingly.
             if (nayin.isNotBlank()) {
                 Text(
                     BaziVi.term(nayin),
                     style = MaterialTheme.typography.labelSmall,
-                    color = WuxingColors.Gold,
+                    color = WuxingColors.elementColor(nayin.takeLast(1), WuxingColors.Gold),
                     textAlign = TextAlign.Center
                 )
             }
@@ -445,26 +485,22 @@ private fun PillarCard(
     }
 }
 
-/** A large Chinese glyph (wuxing-colored) with its Hán-Việt reading below. */
+/** Hán-Việt reading of a stem/branch, wuxing-colored (Vietnamese-only display). */
 @Composable
-private fun GlyphWithVi(char: Char?, fallback: Color) {
+private fun GlyphVi(char: Char?, fallback: Color) {
     val color = char?.let { WuxingColors.charColor(it, fallback) } ?: fallback
     Text(
-        text = char?.toString() ?: "—",
-        fontSize = 32.sp,
+        text = BaziVi.char(char).ifBlank { "—" },
+        style = MaterialTheme.typography.titleLarge,
         fontWeight = FontWeight.Bold,
-        color = color
-    )
-    Text(
-        text = BaziVi.char(char),
-        style = MaterialTheme.typography.labelSmall,
-        fontWeight = FontWeight.Medium,
-        color = color
+        color = color,
+        textAlign = TextAlign.Center
     )
 }
 
 @Composable
 private fun PalaceRow(chart: BaziChart) {
+    val fallback = MaterialTheme.colorScheme.onSurface
     val palaces = listOf(
         stringResource(R.string.palace_ming) to chart.minggong,
         stringResource(R.string.palace_taiyuan) to chart.taiyuan,
@@ -491,19 +527,25 @@ private fun PalaceRow(chart: BaziChart) {
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Text(
-                        value.ifBlank { "—" },
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = WuxingColors.Gold
-                    )
-                    if (value.isNotBlank()) {
+                    if (value.isBlank()) {
                         Text(
-                            BaziVi.translate(value),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center
+                            "—",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = WuxingColors.Gold
                         )
+                    } else {
+                        // Each char colored by its own element (stem + branch)
+                        Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+                            value.forEach { ch ->
+                                Text(
+                                    BaziVi.char(ch),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = WuxingColors.charColor(ch, fallback)
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -531,22 +573,14 @@ private fun WuxingSection(result: ChartResult) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column(
-                    modifier = Modifier.width(40.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        element,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = color
-                    )
-                    Text(
-                        BaziVi.term(element),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = color
-                    )
-                }
+                Text(
+                    BaziVi.term(element),
+                    modifier = Modifier.width(44.dp),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = color,
+                    textAlign = TextAlign.Center
+                )
                 Box(
                     Modifier
                         .weight(1f)
@@ -578,7 +612,12 @@ private fun WuxingSection(result: ChartResult) {
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        wp.strong.forEach { ElementChip(BaziVi.term(it), WuxingColors.Wood) }
+                        wp.strong.forEach {
+                            ElementChip(
+                                BaziVi.term(it),
+                                WuxingColors.elementColor(it.take(1), WuxingColors.Wood)
+                            )
+                        }
                     }
                     if (wp.weak.isNotEmpty()) {
                         Text(
@@ -586,7 +625,12 @@ private fun WuxingSection(result: ChartResult) {
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        wp.weak.forEach { ElementChip(BaziVi.term(it), WuxingColors.Fire) }
+                        wp.weak.forEach {
+                            ElementChip(
+                                BaziVi.term(it),
+                                WuxingColors.elementColor(it.take(1), WuxingColors.Fire)
+                            )
+                        }
                     }
                 }
             }
@@ -618,21 +662,16 @@ private fun DayunSection(chart: BaziChart) {
                         modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Row {
+                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                             dayun.ganzhi.forEach { ch ->
                                 Text(
-                                    ch.toString(),
-                                    style = MaterialTheme.typography.titleMedium,
+                                    BaziVi.char(ch),
+                                    style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Bold,
                                     color = WuxingColors.charColor(ch, fallback)
                                 )
                             }
                         }
-                        Text(
-                            BaziVi.translate(dayun.ganzhi),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
                         Text(
                             "${dayun.startYear}",
                             style = MaterialTheme.typography.labelSmall,

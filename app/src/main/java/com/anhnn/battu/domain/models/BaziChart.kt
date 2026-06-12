@@ -89,5 +89,10 @@ data class Geju(
 data class ChartResult(
     val chart: BaziChart,
     val wuxingPower: WuxingPower?,
-    val geju: Geju?
+    val geju: Geju?,
+    /**
+     * Full API response JSON kept verbatim so the chart can be persisted
+     * locally and rebuilt offline (saved-charts feature).
+     */
+    val rawResponseJson: String
 )

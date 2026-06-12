@@ -38,7 +38,8 @@ class CreateChartUseCaseTest {
                         rawChartJson = "{}"
                     ),
                     wuxingPower = null,
-                    geju = null
+                    geju = null,
+                    rawResponseJson = "{}"
                 )
             )
         }

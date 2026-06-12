@@ -1,6 +1,7 @@
 package com.anhnn.battu.data.datasource
 
 import com.anhnn.battu.data.models.ChartRequestDto
+import com.anhnn.battu.data.models.FeedbackRequestDto
 import kotlinx.serialization.json.JsonObject
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -16,4 +17,7 @@ interface BaziApiService {
 
     @POST("api/v1/chart")
     suspend fun createChart(@Body request: ChartRequestDto): JsonObject
+
+    @POST("api/v1/feedback")
+    suspend fun sendFeedback(@Body request: FeedbackRequestDto)
 }

@@ -7,7 +7,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.anhnn.battu.presentation.screens.chart.ChartScreen
+import com.anhnn.battu.presentation.screens.chart.SavedChartDetailScreen
 import com.anhnn.battu.presentation.screens.home.HomeScreen
+import com.anhnn.battu.presentation.screens.saved.SavedChartsScreen
+import com.anhnn.battu.presentation.screens.settings.PrivacyPolicyScreen
+import com.anhnn.battu.presentation.screens.settings.SettingsScreen
 import com.anhnn.language.LanguageScreen
 import kotlinx.serialization.Serializable
 
@@ -21,6 +25,18 @@ data object ChartRoute
 @Serializable
 data object LanguageRoute
 
+@Serializable
+data object SettingsRoute
+
+@Serializable
+data object PrivacyPolicyRoute
+
+@Serializable
+data object SavedChartsRoute
+
+@Serializable
+data class SavedChartDetailRoute(val id: String)
+
 @Composable
 fun BatTuNavGraph() {
     val navController = rememberNavController()
@@ -32,7 +48,35 @@ fun BatTuNavGraph() {
         composable<HomeRoute> {
             HomeScreen(
                 onOpenChart = { navController.navigate(ChartRoute) },
-                onOpenLanguage = { navController.navigate(LanguageRoute) }
+                onOpenSettings = { navController.navigate(SettingsRoute) }
+            )
+        }
+
+        composable<SettingsRoute> {
+            SettingsScreen(
+                onBack = { navController.popBackStack() },
+                onOpenLanguage = { navController.navigate(LanguageRoute) },
+                onOpenPrivacy = { navController.navigate(PrivacyPolicyRoute) },
+                onOpenSaved = { navController.navigate(SavedChartsRoute) }
+            )
+        }
+
+        composable<SavedChartsRoute> {
+            SavedChartsScreen(
+                onBack = { navController.popBackStack() },
+                onOpenChart = { id -> navController.navigate(SavedChartDetailRoute(id)) }
+            )
+        }
+
+        composable<SavedChartDetailRoute> {
+            SavedChartDetailScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable<PrivacyPolicyRoute> {
+            PrivacyPolicyScreen(
+                onBack = { navController.popBackStack() }
             )
         }
 
