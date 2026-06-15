@@ -77,6 +77,11 @@ dependencies {
     // Settings persistence (theme mode)
     implementation libs.androidx.datastore.preferences
 
+    // Local DB for calendar events (Sự kiện)
+    implementation libs.androidx.room.runtime
+    implementation libs.androidx.room.ktx
+    ksp libs.androidx.room.compiler
+
     testImplementation libs.junit
     testImplementation libs.kotlinx.coroutines.test
     androidTestImplementation libs.androidx.junit

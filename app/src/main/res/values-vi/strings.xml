@@ -11,6 +11,10 @@
     <string name="home_open_language">Ngôn ngữ</string>
     <string name="home_open_settings">Cài đặt</string>
     <string name="home_title">Bát Tự</string>
+    <string name="home_tagline">Lá số Tứ Trụ Mệnh Lý</string>
+    <string name="home_cta_desc">Nhập ngày giờ sinh để lập lá số của bạn</string>
+    <string name="home_settings_desc">Giao diện, ngôn ngữ và hơn thế</string>
+    <string name="home_footer">Thuộc hệ sinh thái Anhnn</string>
 
     <!-- Settings -->
     <string name="settings_title">Cài đặt</string>
@@ -88,4 +92,53 @@
     <string name="geju_type">Loại</string>
     <string name="geju_strength">Nhật chủ cường nhược</string>
     <string name="dayun_age">%1$d tuổi</string>
+
+    <!-- Home: ô lịch -->
+    <string name="home_calendar_title">Lịch Âm Dương</string>
+    <string name="home_calendar_desc">Lịch âm – dương, Can Chi và ngày lễ</string>
+
+    <!-- Màn lịch -->
+    <string name="calendar_screen_title">LỊCH ÂM DƯƠNG</string>
+    <string name="calendar_month_year">Tháng %1$d, Năm %2$d</string>
+    <string name="calendar_your_events">Sự kiện của tôi</string>
+    <string name="calendar_cd_add_event">Thêm sự kiện</string>
+    <string name="calendar_lunar_prefix">Âm lịch: %1$s</string>
+    <string name="calendar_intercalary">(tháng nhuận)</string>
+    <string name="calendar_label_day">Ngày</string>
+    <string name="calendar_label_lunar_month">Tháng</string>
+    <string name="calendar_label_lunar_year">Năm</string>
+    <string name="calendar_label_truc">Trực</string>
+    <string name="calendar_truc_good">Tốt</string>
+    <string name="calendar_truc_bad">Xấu</string>
+    <string name="calendar_luc_nham_label">Lục Nhâm</string>
+    <string name="calendar_hoang_dao">Hoàng Đạo</string>
+    <string name="calendar_hac_dao">Hắc Đạo</string>
+    <string name="calendar_hoang_dao_hours_label">Giờ Hoàng Đạo</string>
+    <string name="calendar_day_sun">CN</string>
+    <string name="calendar_day_mon">T2</string>
+    <string name="calendar_day_tue">T3</string>
+    <string name="calendar_day_wed">T4</string>
+    <string name="calendar_day_thu">T5</string>
+    <string name="calendar_day_fri">T6</string>
+    <string name="calendar_day_sat">T7</string>
+
+    <!-- Sheet thêm sự kiện -->
+    <string name="add_event_sheet_title">Thêm sự kiện %1$d/%2$d/%3$d (%4$s)</string>
+    <string name="add_event_label_title">Tiêu đề *</string>
+    <string name="add_event_label_note">Ghi chú</string>
+    <string name="add_event_reminder">Nhắc nhở</string>
+    <string name="add_event_alarm_time">Thời gian báo thức</string>
+    <string name="add_event_btn_save">Lưu sự kiện</string>
+    <string name="add_event_remind_at">Nhắc nhở lúc %1$s:%2$s</string>
+
+    <!-- Quyền thông báo -->
+    <string name="notif_perm_blocked_title">Thông báo đang tắt</string>
+    <string name="notif_perm_blocked_message">Quyền thông báo đã bị tắt. Mở Cài đặt để bật nhắc nhở cho ứng dụng.</string>
+    <string name="notif_perm_open_settings">Mở Cài đặt</string>
+
+    <!-- Thông báo sự kiện -->
+    <string name="notif_event_default_title">Sự kiện</string>
+    <string name="notif_event_default_text">Bạn có một nhắc nhở sự kiện.</string>
+    <string name="notif_channel_name">Nhắc nhở sự kiện</string>
+    <string name="notif_channel_desc">Nhắc nhở cho các sự kiện trên lịch</string>
 </resources>
