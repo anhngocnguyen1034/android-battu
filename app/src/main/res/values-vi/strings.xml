@@ -81,6 +81,15 @@
     <string name="pillar_month">Tháng</string>
     <string name="pillar_day">Ngày</string>
     <string name="pillar_hour">Giờ</string>
+    <string name="pillar_label">Trụ %1$s</string>
+    <string name="cell_heavenly_stem">Thiên Can</string>
+    <string name="cell_earthly_branch">Địa Chi</string>
+    <string name="cell_element">Ngũ hành: %1$s</string>
+    <string name="cell_no_info">Chưa có nội dung giải nghĩa cho ký tự này.</string>
+    <string name="thansat_profile_title">Hồ sơ Thần sát</string>
+    <string name="thansat_good">Cát tinh</string>
+    <string name="thansat_hung">Hung tinh</string>
+    <string name="thansat_empty">Trụ này không có Thần sát.</string>
     <string name="palace_ming">Mệnh cung</string>
     <string name="palace_taiyuan">Thai nguyên</string>
     <string name="palace_taixi">Thai tức</string>

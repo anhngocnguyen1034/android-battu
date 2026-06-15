@@ -81,6 +81,15 @@
     <string name="pillar_month">Month</string>
     <string name="pillar_day">Day</string>
     <string name="pillar_hour">Hour</string>
+    <string name="pillar_label">%1$s Pillar</string>
+    <string name="cell_heavenly_stem">Heavenly Stem</string>
+    <string name="cell_earthly_branch">Earthly Branch</string>
+    <string name="cell_element">Element: %1$s</string>
+    <string name="cell_no_info">No interpretation available for this character yet.</string>
+    <string name="thansat_profile_title">Symbolic Stars</string>
+    <string name="thansat_good">Auspicious</string>
+    <string name="thansat_hung">Inauspicious</string>
+    <string name="thansat_empty">No symbolic stars in this pillar.</string>
     <string name="palace_ming">Life Palace</string>
     <string name="palace_taiyuan">Conception Palace</string>
     <string name="palace_taixi">Fetal Breath</string>
