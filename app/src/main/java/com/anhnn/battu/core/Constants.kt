@@ -13,7 +13,7 @@ object Constants {
      *
      * Replace with the real Static Service URL for production builds.
      */
-    const val BAZI_BASE_URL = "http://192.168.1.13:8000/"
+    const val BAZI_BASE_URL = "http://192.168.0.102:8000/"
 
     /** Address that receives user feedback (Settings → Feedback). */
     const val FEEDBACK_EMAIL = "nguyenanhcry@gmail.com"
