@@ -26,7 +26,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -60,6 +59,11 @@ import com.anhnn.battu.R
 import com.anhnn.battu.domain.models.BaziChart
 import com.anhnn.battu.domain.models.ChartResult
 import com.anhnn.battu.domain.models.Gender
+import com.anhnn.battu.presentation.screens.chart.components.BaziGrid
+import com.anhnn.battu.presentation.screens.chart.components.CanChiInfoSheet
+import com.anhnn.battu.presentation.screens.chart.components.ElementKey
+import com.anhnn.battu.presentation.screens.chart.components.PillarType
+import com.anhnn.battu.presentation.screens.chart.components.ThanSatProfileSheet
 import com.anhnn.battu.presentation.theme.WuxingColors
 import com.anhnn.battu.presentation.util.BaziVi
 import com.anhnn.battu.presentation.viewmodels.ChartState
@@ -103,6 +107,9 @@ private fun ChartContent(
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
+    var selectedCell by remember { mutableStateOf<ElementKey?>(null) }
+    var selectedPillar by remember { mutableStateOf<PillarType?>(null) }
+    val successResult = (uiState.chartState as? ChartState.Success)?.result
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -157,7 +164,11 @@ private fun ChartContent(
                             onSaveChart = onSaveChart
                         )
                     }
-                    chartResultItems(chartState.result)
+                    chartResultItems(
+                        result = chartState.result,
+                        onCellClick = { selectedCell = it },
+                        onShenshaClick = { selectedPillar = it }
+                    )
                 }
             }
         }
@@ -205,6 +216,19 @@ private fun ChartContent(
                 }
             },
             text = { TimePicker(state = timePickerState) }
+        )
+    }
+
+    selectedCell?.let { cell ->
+        CanChiInfoSheet(cell = cell, onDismiss = { selectedCell = null })
+    }
+
+    val pillar = selectedPillar
+    if (pillar != null && successResult != null) {
+        ThanSatProfileSheet(
+            pillar = pillar,
+            chart = successResult.chart,
+            onDismiss = { selectedPillar = null }
         )
     }
 }
@@ -289,11 +313,17 @@ private fun SaveChartButton(
 // ── Result sections ───────────────────────────────────────────────
 
 // Internal: also reused by SavedChartDetailScreen to render a saved chart
-internal fun LazyListScope.chartResultItems(result: ChartResult) {
+internal fun LazyListScope.chartResultItems(
+    result: ChartResult,
+    onCellClick: (ElementKey) -> Unit = {},
+    onShenshaClick: (PillarType) -> Unit = {}
+) {
     val chart = result.chart
 
     item(key = "header") { DayMasterHeader(chart) }
-    item(key = "pillars") { FourPillars(chart) }
+    item(key = "pillars") {
+        BaziGrid(chart = chart, onCellClick = onCellClick, onShenshaClick = onShenshaClick)
+    }
     item(key = "palaces") { PalaceRow(chart) }
     item(key = "wuxing") { WuxingSection(result) }
 
@@ -342,160 +372,6 @@ private fun DayMasterHeader(chart: BaziChart) {
             )
         }
     }
-}
-
-/**
- * A single pillar slot, mapping a display position to its backend data index.
- *
- * Backend [BaziChart] arrays are indexed [Year=0, Month=1, Day=2, Hour=3].
- * Traditional Bazi is read Hour → Day → Month → Year, which on a modern
- * left-to-right screen means rendering in that exact order.
- */
-private data class PillarSlot(
-    val dataIndex: Int,
-    val labelRes: Int,
-    val subRes: Int,
-    val isDayMaster: Boolean,
-)
-
-private val PILLAR_SLOTS = listOf(
-    PillarSlot(3, R.string.pillar_hour, R.string.pillar_sub_hour, isDayMaster = false),   // 0 · Hour
-    PillarSlot(2, R.string.pillar_day, R.string.pillar_sub_day, isDayMaster = true),      // 1 · Day (Nhật Chủ)
-    PillarSlot(1, R.string.pillar_month, R.string.pillar_sub_month, isDayMaster = false), // 2 · Month
-    PillarSlot(0, R.string.pillar_year, R.string.pillar_sub_year, isDayMaster = false),   // 3 · Year
-)
-
-@Composable
-private fun FourPillars(chart: BaziChart) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
-        PILLAR_SLOTS.forEach { slot ->
-            val i = slot.dataIndex
-            val pillar = chart.pillars.getOrNull(i).orEmpty()
-            PillarCard(
-                modifier = Modifier.weight(1f),
-                label = stringResource(slot.labelRes),
-                sublabel = stringResource(slot.subRes),
-                isDayMasterPillar = slot.isDayMaster,
-                stem = pillar.getOrNull(0),
-                branch = pillar.getOrNull(1),
-                tenGodGan = chart.tgGan.getOrNull(i).orEmpty(),
-                tenGodZhi = chart.tgZhi.getOrNull(i).orEmpty(),
-                nayin = chart.nayin.getOrNull(i).orEmpty(),
-                dishi = chart.dishi.getOrNull(i).orEmpty(),
-                shensha = chart.shenshaDetail[i].orEmpty()
-            )
-        }
-    }
-}
-
-@Composable
-private fun PillarCard(
-    label: String,
-    sublabel: String,
-    isDayMasterPillar: Boolean,
-    stem: Char?,
-    branch: Char?,
-    tenGodGan: String,
-    tenGodZhi: String,
-    nayin: String,
-    dishi: String,
-    shensha: List<String>,
-    modifier: Modifier = Modifier
-) {
-    val fallback = MaterialTheme.colorScheme.onSurface
-    // Highlight the Day Pillar — it is the core (Nhật Chủ) of the whole chart.
-    val containerColor =
-        if (isDayMasterPillar) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
-        else MaterialTheme.colorScheme.surfaceVariant
-
-    Card(
-        modifier = modifier,
-        colors = CardDefaults.cardColors(containerColor = containerColor)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 2.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(3.dp)
-        ) {
-            // 1 · Pillar title
-            Text(label, style = MaterialTheme.typography.labelMedium, color = WuxingColors.Gold)
-            Text(
-                sublabel,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            // 2 · Ten God of the Stem — Day Pillar is forced to "Nhật Chủ" (bold).
-            // Colored like the stem below it so the element reads at a glance.
-            Text(
-                text = if (isDayMasterPillar) stringResource(R.string.section_day_master)
-                else BaziVi.term(tenGodGan).ifBlank { " " },
-                style = MaterialTheme.typography.labelSmall,
-                fontWeight = if (isDayMasterPillar) FontWeight.Bold else FontWeight.Normal,
-                color = stem?.let { WuxingColors.charColor(it, WuxingColors.Gold) }
-                    ?: WuxingColors.Gold,
-                textAlign = TextAlign.Center
-            )
-
-            // 3 · Heavenly Stem (Thiên Can), Hán-Việt reading
-            GlyphVi(stem, fallback)
-
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 2.dp),
-                color = MaterialTheme.colorScheme.outlineVariant
-            )
-
-            // 4 · Earthly Branch (Địa Chi), Hán-Việt reading
-            GlyphVi(branch, fallback)
-
-            // 5 · Hidden Stems' Ten Gods (Tàng Can) — rendered BELOW the branch.
-            Text(
-                BaziVi.tokens(tenGodZhi).ifBlank { " " },
-                style = MaterialTheme.typography.labelSmall,
-                color = WuxingColors.Gold.copy(alpha = 0.8f),
-                textAlign = TextAlign.Center
-            )
-
-            // 6 · Nayin (Nạp âm) & Dishi (Địa thế)
-            // Nayin's last char is its element (路旁土 → 土) — color accordingly.
-            if (nayin.isNotBlank()) {
-                Text(
-                    BaziVi.term(nayin),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = WuxingColors.elementColor(nayin.takeLast(1), WuxingColors.Gold),
-                    textAlign = TextAlign.Center
-                )
-            }
-            if (dishi.isNotBlank()) {
-                Text(
-                    BaziVi.term(dishi),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            // 7 · Shensha (Thần sát)
-            shensha.filter { it.isNotBlank() }.take(3).forEach { tag ->
-                ElementChip(text = BaziVi.term(tag), color = WuxingColors.Wood)
-            }
-        }
-    }
-}
-
-/** Hán-Việt reading of a stem/branch, wuxing-colored (Vietnamese-only display). */
-@Composable
-private fun GlyphVi(char: Char?, fallback: Color) {
-    val color = char?.let { WuxingColors.charColor(it, fallback) } ?: fallback
-    Text(
-        text = BaziVi.char(char).ifBlank { "—" },
-        style = MaterialTheme.typography.titleLarge,
-        fontWeight = FontWeight.Bold,
-        color = color,
-        textAlign = TextAlign.Center
-    )
 }
 
 @Composable

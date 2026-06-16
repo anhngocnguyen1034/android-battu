@@ -18,6 +18,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -25,6 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anhnn.battu.R
+import com.anhnn.battu.presentation.screens.chart.components.CanChiInfoSheet
+import com.anhnn.battu.presentation.screens.chart.components.ElementKey
+import com.anhnn.battu.presentation.screens.chart.components.PillarType
+import com.anhnn.battu.presentation.screens.chart.components.ThanSatProfileSheet
 import com.anhnn.battu.presentation.viewmodels.SavedChartDetailState
 import com.anhnn.battu.presentation.viewmodels.SavedChartDetailViewModel
 
@@ -36,6 +43,9 @@ fun SavedChartDetailScreen(
     viewModel: SavedChartDetailViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    var selectedCell by remember { mutableStateOf<ElementKey?>(null) }
+    var selectedPillar by remember { mutableStateOf<PillarType?>(null) }
+    val successResult = (state as? SavedChartDetailState.Success)?.result
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -85,8 +95,25 @@ fun SavedChartDetailScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(vertical = 16.dp)
             ) {
-                chartResultItems(detailState.result)
+                chartResultItems(
+                    result = detailState.result,
+                    onCellClick = { selectedCell = it },
+                    onShenshaClick = { selectedPillar = it }
+                )
             }
         }
+    }
+
+    selectedCell?.let { cell ->
+        CanChiInfoSheet(cell = cell, onDismiss = { selectedCell = null })
+    }
+
+    val pillar = selectedPillar
+    if (pillar != null && successResult != null) {
+        ThanSatProfileSheet(
+            pillar = pillar,
+            chart = successResult.chart,
+            onDismiss = { selectedPillar = null }
+        )
     }
 }

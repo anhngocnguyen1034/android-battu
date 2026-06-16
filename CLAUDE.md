@@ -20,17 +20,22 @@ CI is Jenkins (`Jenkinsfile` → `.anhnn/build.sh`): builds only on `develop`/`t
 
 ## Architecture
 
-Clean Architecture, strictly three layers under `app/src/main/java/com/anhnn/battu/`:
+Clean Architecture, three layers under `app/src/main/java/com/anhnn/battu/`:
 
-- `data/` — `datasource/BaziApiService.kt` (Retrofit), `models/` (DTOs + mappers), `repository/` (implementations)
+- `data/` — `datasource/` (`BaziApiService.kt` Retrofit + `SavedChartDataSource`, `SettingsDataSource`), `models/` (DTOs + mappers), `repository/` (implementations), `local/` (Room: `BatTuDatabase`, `SuKienEntity`, `SuKienDao` for calendar events)
 - `domain/` — pure Kotlin: `models/` (`@Immutable` entities), `repository/` (interfaces), `usecases/`
-- `presentation/` — `screens/`, `viewmodels/`, `theme/`, `navigation/NavGraph.kt`, `util/BaziVi.kt` (Vietnamese display names for Chinese Bazi terms)
+- `presentation/` — `screens/`, `viewmodels/`, `theme/`, `components/`, `navigation/NavGraph.kt`, `util/BaziVi.kt` (Vietnamese display names for Chinese Bazi terms)
 - `di/` — Hilt modules (`NetworkModule`, `RepositoryModule`, `AppModule`); everything constructor-injected
-- `core/Constants.kt` — backend base URL
+- `notification/` — `AlarmHelper`, `BootReceiver`, `SuKienReceiver` (calendar event reminders via AlarmManager; reschedule on boot)
+- `core/Constants.kt` — backend base URL, feedback email
 
 Unidirectional data flow: ViewModel exposes a single UI-state object via `StateFlow`; UI collects with `collectAsStateWithLifecycle()` and sends events up as lambdas. Errors are caught in the data layer and returned as `Result<T>` (never let non-cancellation exceptions escape; `CancellationException` is rethrown).
 
-Navigation routes are `@Serializable` objects (`HomeRoute`, `ChartRoute`, `LanguageRoute`) in `NavGraph.kt`.
+Navigation routes are `@Serializable` objects in `NavGraph.kt`: `HomeRoute`, `ChartRoute`, `LanguageRoute`, `SettingsRoute`, `PrivacyPolicyRoute`, `SavedChartsRoute`, `SavedChartDetailRoute(id)`, `CalendarRoute`. Features beyond the core chart flow: saved charts (persisted locally), settings + theme switching, in-app feedback dialog, and the lunar calendar (see below).
+
+### Lunar calendar (Lịch Âm Dương)
+
+`CalendarScreen` + `AddEventSheet` (in `screens/calendar/`), backed by `CalendarViewModel` (lunar/solar date data from the backend) and `EventViewModel` (user reminders). Events persist to a Room DB (`data/local/`) and schedule notifications through `notification/AlarmHelper`. Calendar DTOs are in `data/models/CalendarDtos.kt`.
 
 ### FOR-BAZI backend contract (critical — see docs/bug.md)
 
@@ -51,7 +56,7 @@ Uses the in-house JitPack library `com.github.anhngocnguyen1034:anhnn-language` 
 
 ## Project conventions (from docs/)
 
-The `docs/` folder holds the Anhnn ecosystem rules (`clauderules.md`, `General.md`, `UI_GUIDE.md`, `Testing.md`, `Perfopmance.md`, `Project_structor.md`). Key points:
+The `docs/` folder holds the Anhnn ecosystem rules (`clauderules.md`, `General.md`, `UI_GUIDE.md`, `Testing.md`, `Perfopmance.md`, `Project_structor.md`, `component.md`, `switch_theme.md`). Key points:
 
 - **Theming**: wrap UI in the app theme; use `MaterialTheme.colorScheme` tokens, never hardcode hex colors in composables. Element (Wuxing) colors live in `presentation/theme/WuxingColors.kt`. Anhnn signature gradient: `#A1A2FF → #4B4EEE`.
 - **Compose**: stateless composables via state hoisting; composable names are nouns; provide unique `key`s in lazy lists; mark UI-facing data classes `@Immutable`/`@Stable`; defer fast-changing state reads with lambdas; at least two `@Preview`s (Light/Dark) per UI component. Modifier ordering: size → clip/background → clickable → padding.

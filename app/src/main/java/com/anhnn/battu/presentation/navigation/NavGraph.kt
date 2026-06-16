@@ -6,6 +6,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.anhnn.battu.presentation.screens.calendar.CalendarScreen
 import com.anhnn.battu.presentation.screens.chart.ChartScreen
 import com.anhnn.battu.presentation.screens.chart.SavedChartDetailScreen
 import com.anhnn.battu.presentation.screens.home.HomeScreen
@@ -35,6 +36,9 @@ data object PrivacyPolicyRoute
 data object SavedChartsRoute
 
 @Serializable
+data object CalendarRoute
+
+@Serializable
 data class SavedChartDetailRoute(val id: String)
 
 @Composable
@@ -48,6 +52,8 @@ fun BatTuNavGraph() {
         composable<HomeRoute> {
             HomeScreen(
                 onOpenChart = { navController.navigate(ChartRoute) },
+                onOpenCalendar = { navController.navigate(CalendarRoute) },
+                onOpenSaved = { navController.navigate(SavedChartsRoute) },
                 onOpenSettings = { navController.navigate(SettingsRoute) }
             )
         }
@@ -82,6 +88,12 @@ fun BatTuNavGraph() {
 
         composable<ChartRoute> {
             ChartScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable<CalendarRoute> {
+            CalendarScreen(
                 onBack = { navController.popBackStack() }
             )
         }
