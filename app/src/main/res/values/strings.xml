@@ -51,7 +51,9 @@
     <!-- Chart form -->
     <string name="chart_title">Bazi Chart</string>
     <string name="chart_create">Create chart</string>
+    <string name="chart_form_title">Birth information</string>
     <string name="chart_birth_date">Birth date</string>
+    <string name="chart_birth_time">Birth time</string>
     <string name="gender_male">Male</string>
     <string name="gender_female">Female</string>
 

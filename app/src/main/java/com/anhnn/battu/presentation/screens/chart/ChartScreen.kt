@@ -1,6 +1,7 @@
 package com.anhnn.battu.presentation.screens.chart
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,16 +18,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -37,7 +43,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
@@ -47,6 +52,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -64,6 +70,7 @@ import com.anhnn.battu.presentation.screens.chart.components.CanChiInfoSheet
 import com.anhnn.battu.presentation.screens.chart.components.ElementKey
 import com.anhnn.battu.presentation.screens.chart.components.PillarType
 import com.anhnn.battu.presentation.screens.chart.components.ThanSatProfileSheet
+import com.anhnn.battu.presentation.theme.AnhnnGradient
 import com.anhnn.battu.presentation.theme.WuxingColors
 import com.anhnn.battu.presentation.util.BaziVi
 import com.anhnn.battu.presentation.viewmodels.ChartState
@@ -114,10 +121,20 @@ private fun ChartContent(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.chart_title)) },
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        stringResource(R.string.chart_title),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                },
                 navigationIcon = {
-                    TextButton(onClick = onBack) { Text(stringResource(R.string.back)) }
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
+                    }
                 }
             )
         }
@@ -243,43 +260,79 @@ private fun ChartForm(
     onGenderSelected: (Gender) -> Unit,
     onCreateChart: () -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            OutlinedButton(onClick = onShowDatePicker, modifier = Modifier.weight(1f)) {
-                Text(
-                    uiState.birthDateMillis?.let { formatDate(it) }
-                        ?: stringResource(R.string.chart_birth_date)
-                )
-            }
-            OutlinedButton(onClick = onShowTimePicker, modifier = Modifier.weight(1f)) {
-                Text("%02d:%02d".format(Locale.US, uiState.hour, uiState.minute))
-            }
-        }
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            SectionHeader(stringResource(R.string.chart_form_title))
 
-        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-            Gender.entries.forEachIndexed { index, gender ->
-                SegmentedButton(
-                    selected = uiState.gender == gender,
-                    onClick = { onGenderSelected(gender) },
-                    shape = SegmentedButtonDefaults.itemShape(index, Gender.entries.size)
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                LabeledField(
+                    label = stringResource(R.string.chart_birth_date),
+                    modifier = Modifier.weight(1f)
                 ) {
-                    Text(
-                        stringResource(
-                            if (gender == Gender.MALE) R.string.gender_male
-                            else R.string.gender_female
-                        )
-                    )
+                    OutlinedButton(onClick = onShowDatePicker, modifier = Modifier.fillMaxWidth()) {
+                        Text(uiState.birthDateMillis?.let { formatDate(it) } ?: "—")
+                    }
+                }
+                LabeledField(
+                    label = stringResource(R.string.chart_birth_time),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    OutlinedButton(onClick = onShowTimePicker, modifier = Modifier.fillMaxWidth()) {
+                        Text("%02d:%02d".format(Locale.US, uiState.hour, uiState.minute))
+                    }
                 }
             }
-        }
 
-        Button(
-            onClick = onCreateChart,
-            enabled = uiState.canSubmit,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(stringResource(R.string.chart_create))
+            SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                Gender.entries.forEachIndexed { index, gender ->
+                    SegmentedButton(
+                        selected = uiState.gender == gender,
+                        onClick = { onGenderSelected(gender) },
+                        shape = SegmentedButtonDefaults.itemShape(index, Gender.entries.size)
+                    ) {
+                        Text(
+                            stringResource(
+                                if (gender == Gender.MALE) R.string.gender_male
+                                else R.string.gender_female
+                            )
+                        )
+                    }
+                }
+            }
+
+            Button(
+                onClick = onCreateChart,
+                enabled = uiState.canSubmit,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.chart_create))
+            }
         }
+    }
+}
+
+@Composable
+private fun LabeledField(
+    label: String,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        content()
     }
 }
 
@@ -346,30 +399,62 @@ internal fun LazyListScope.chartResultItems(
 private fun DayMasterHeader(chart: BaziChart) {
     val fallback = MaterialTheme.colorScheme.onSurface
     val dm = chart.dayMaster.firstOrNull()
-    Column {
-        Text(
-            text = stringResource(R.string.chart_header_title),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold,
-            color = WuxingColors.Gold
+    val dmColor = dm?.let { WuxingColors.charColor(it, fallback) } ?: WuxingColors.Gold
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = stringResource(R.string.section_day_master) + ": ",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = "${BaziVi.char(dm)} · ${BaziVi.stemElement(dm)}",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = dm?.let { WuxingColors.charColor(it, fallback) } ?: fallback
-            )
-            Text(
-                text = "   " + BaziVi.gender(chart.gender),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Nhật Chủ glyph — vòng tròn viền gradient Anhnn, nền tô màu Ngũ Hành.
+            Box(
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape)
+                    .background(dmColor.copy(alpha = 0.12f))
+                    .border(2.dp, AnhnnGradient, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = BaziVi.char(dm).ifBlank { "—" },
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = dmColor
+                )
+            }
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(
+                    text = stringResource(R.string.chart_header_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = WuxingColors.Gold
+                )
+                Text(
+                    text = stringResource(R.string.section_day_master) +
+                        " · ${BaziVi.char(dm)} ${BaziVi.stemElement(dm)}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Surface(
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                    contentColor = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(6.dp)
+                ) {
+                    Text(
+                        text = BaziVi.gender(chart.gender),
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
         }
     }
 }
@@ -621,22 +706,40 @@ private fun MutableList<Pair<String, List<String>>>.addGroup(label: String, valu
 private fun SectionCard(titleRes: Int, content: @Composable () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(
-                stringResource(titleRes),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = WuxingColors.Gold
-            )
+            SectionHeader(stringResource(titleRes))
             content()
         }
+    }
+}
+
+/** Tiêu đề mục: thanh accent vàng dọc + chữ vàng — dấu ấn huyền học của lá số. */
+@Composable
+private fun SectionHeader(title: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Box(
+            Modifier
+                .size(width = 3.dp, height = 16.dp)
+                .clip(RoundedCornerShape(2.dp))
+                .background(WuxingColors.Gold)
+        )
+        Text(
+            title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = WuxingColors.Gold
+        )
     }
 }
 

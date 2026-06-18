@@ -51,7 +51,9 @@
     <!-- Chart form -->
     <string name="chart_title">Lá số Bát Tự</string>
     <string name="chart_create">Lập lá số</string>
+    <string name="chart_form_title">Thông tin khai sinh</string>
     <string name="chart_birth_date">Ngày sinh</string>
+    <string name="chart_birth_time">Giờ sinh</string>
     <string name="gender_male">Nam</string>
     <string name="gender_female">Nữ</string>
 
